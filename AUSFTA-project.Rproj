@@ -1,0 +1,14 @@
+Version: 1.0
+ProjectId: aceae262-6c5c-4a13-9d4c-6bdd885ec19a
+
+RestoreWorkspace: Default
+SaveWorkspace: Default
+AlwaysSaveHistory: Default
+
+EnableCodeIndexing: Yes
+UseSpacesForTab: Yes
+NumSpacesForTab: 2
+Encoding: UTF-8
+
+RnwWeave: Sweave
+LaTeX: pdfLaTeX
