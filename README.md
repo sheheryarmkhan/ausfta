@@ -27,15 +27,7 @@ This code is the analysis of the AUSFTA of 2005.
 
 # Data Availability and Provenance Statements
 
-The data relied on in this paper can be found in the './input' folder of the repository and is described in the Table below:
-
-```{r,echo = FALSE}
-data_descr = rbind.data.frame(
-              vargas = c("./input/data/...", "CITATION", "yes", "Short Description")
-)
-colnames(data_descr) = c("Data File", "Source", "Provided", "Additional information")
-
-kable(data_descr)
+The data relied on in this paper can be found in the './input' folder of the repository.
 ```
 
 
