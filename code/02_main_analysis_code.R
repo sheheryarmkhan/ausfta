@@ -2,12 +2,14 @@
 library(dplyr)
 library(tidyr)
 library(fixest)
+library(here)
 library(ggplot2)
 library(broom)
 
-# --- Load & Clean Data ---
-setwd("~/RIA Work")
-data <- readRDS("my_data.rds")
+#combining datasets
+
+# Load datasets
+data <- readRDS(here("input","data","ourdata.rds"))
 
 data <- data %>%
   filter(year <= 2016) %>%
@@ -104,92 +106,3 @@ lag_model <- feols(
   data = data, cluster = ~pair_id
 )
 print(summary(lag_model))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# --- Define Sectors (Adjust 'sector' if named differently) ---
-# Check unique sectors first
-unique(data$sector)  # adjust this to inspect sector names
-
-# Filter for Agriculture and Manufacturing
-data_agri <- data %>% filter(sector == "agriculture")
-data_manuf <- data %>% filter(sector == "manufacturing")
-
-# --- Run Sectoral Gravity Models (PPML with full FEs) ---
-
-model_agri <- fepois(
-  trade ~ AUSFTA + agree_fta + agree_eia + agree_cu + agree_psa |
-    pair_id + exporter_iso3^year + importer_iso3^year,
-  data = data_agri,
-  cluster = ~pair_id
-)
-
-model_manuf <- fepois(
-  trade ~ AUSFTA + agree_fta + agree_eia + agree_cu + agree_psa |
-    pair_id + exporter_iso3^year + importer_iso3^year,
-  data = data_manuf,
-  cluster = ~pair_id
-)
-
-# --- Print Results ---
-cat("=== Agriculture Sector ===\n")
-print(summary(model_agri))
-
-cat("\n=== Manufacturing Sector ===\n")
-print(summary(model_manuf))
-
-# --- Optional: Coefficient Plot ---
-coefs <- data.frame(
-  sector = c("Agriculture", "Manufacturing"),
-  coef = c(coef(model_agri)["AUSFTA"], coef(model_manuf)["AUSFTA"]),
-  se = c(se(model_agri)["AUSFTA"], se(model_manuf)["AUSFTA"])
-)
-
-ggplot(coefs, aes(x = sector, y = coef)) +
-  geom_point(size = 3) +
-  geom_errorbar(aes(ymin = coef - 1.96*se, ymax = coef + 1.96*se), width = 0.2) +
-  geom_hline(yintercept = 0, linetype = "dashed") +
-  labs(title = "Effect of AUSFTA by Sector", y = "Coefficient on AUSFTA (PPML)", x = "") +
-  theme_minimal()
-
-
-
-
-#STAR GAZER
-
-install.packages("modelsummary")
-library(modelsummary)
-
-
-# Create a named list of models
-models <- list(
-  "Naive Gravity" = naive_model,
-  "Base Gravity" = base_model,
-  "Structural Gravity (FE)" = fe_model_structural,
-  "PPML (FE)" = ppml_model,
-  "DiD (PPML)" = did_model,
-  "Placebo 2003" = placebo_model,
-  "Lag 2006" = lag_model
-)
-
-# Display table in console or export to LaTeX
-modelsummary(models,
-             stars = TRUE,
-             gof_omit = "IC|Log|Adj|Within|RMSE",
-             statistic = "std.error",
-             output = "results_table.tex")  # or "markdown", "html", or file path

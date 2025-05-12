@@ -1,12 +1,12 @@
 # load once
 library(dplyr)
+library(here) #easy file referencing, root is set at project root
 library(ggplot2)
 library(tidyr)
 library(patchwork)
 
 # 0. Read data
-data <- readRDS("C:/Users/Sherry/Desktop/usitc_itpd_e_r02.rds")
-
+data = readRDS(here("input","data","usitc_itpd_e_r02.rds"))
 ### Notes on dataframes
 ## Data = original dataset from the professor
 ## filtered_data = filtered for exports or imports from/to USA/AUS to all other countries

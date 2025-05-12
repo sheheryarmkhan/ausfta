@@ -1,10 +1,11 @@
 # Load required packages
 library(dplyr)
 library(fixest)
-
+library(here)
 # Load datasets
-data1 <- readRDS("C:/Users/Sherry/Desktop/usitc_itpd_e_r02.rds")
-data2 <- readRDS("C:/Users/Sherry/Desktop/usitc_dgd.rds")
+
+data1 <- readRDS(here("input","data","usitc_itpd_e_r02.rds"))
+data2 <- readRDS(here("input","data","usitc_dgd.rds"))
 
 # Merge datasets on year and dynamic country codes
 merged_data <- left_join(
